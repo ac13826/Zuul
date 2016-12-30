@@ -21,6 +21,7 @@ class Rooms{
   Rooms(const char* newDescription,vector<Rooms*>* roomList);
   ~Rooms();
   bool isEnd();
+  bool gameover();
   char* getItem();
   Rooms* getExits(char* exitKey);
   void pickupItem(vector<Items*>* inventory);//putting the item into inventory
@@ -32,6 +33,7 @@ class Rooms{
   Rooms* goThruExit();
   void printDescription();//print out information (name, description,...)
   void setEnd();
+  void setLose();
   void checkItem();
  protected:
   char room[10];
@@ -42,6 +44,7 @@ class Rooms{
   char directioninput[30];
   bool end;
   bool itemcheck;
+  bool lose;
 };
 
 #endif

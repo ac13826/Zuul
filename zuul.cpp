@@ -19,7 +19,7 @@ void setupRoom(vector<Rooms*>*list){//creating all my rooms
     Rooms* living_room = new Rooms("in the living room. Play the piano!", list);
     Rooms* elevator = new Rooms("in the elevator that is moving upward.", list);
     Rooms* corridor = new Rooms("in the corridor.", list);
-    Rooms* sanil = new Rooms("in Sanil's Room, it smells kinda funny.", list);
+    Rooms* sanil = new Rooms("in Sanil's Room, it smells kinda funny. You are at a crossroads of sorts. I recommend that you get the eyeballs and the cookies. Should you choose the wrong path, and not have all the items... hehehe (basically you might lose, so i recommend getting cookies and eyeballs", list);
     Rooms* torture_room = new Rooms("in the torture room... you hear screaming, it's all dark, there seems to be a curtain that's blocking the view.", list);
     Rooms* golden_bath = new Rooms("IN THE GOLDEN BATHROOM.", list);
     Rooms* game_room = new Rooms("finally in the game room!", list);
@@ -63,6 +63,8 @@ void setupRoom(vector<Rooms*>*list){//creating all my rooms
     golden_bath->setExits("south", sanil);
     golden_bath->setExits("east", game_room);
 
+    game_room->setExits("west",golden_bath);
+
     guest_room->setExits("east", elevator);
     guest_room->setExits("north", bronze_bath);
     
@@ -72,7 +74,9 @@ void setupRoom(vector<Rooms*>*list){//creating all my rooms
     attic->setExits("east", bronze_bath);
     entrance->placeItem(new Items("umbrella"));
     kitchen->placeItem(new Items("cookies"));
-    hall->setEnd();
+    attic->placeItem(new Items("eyeballs"));
+    game_room->setEnd();
+    torture_room->setLose();
 }
 
 int main(){
@@ -84,8 +88,10 @@ int main(){
   setupRoom(&list);
   Items* jacket = new Items("jacket");
   Items* shoes = new Items("shoes");
-  inventory.push_back(jacket);
+  
   inventory.push_back(shoes);
+  inventory.push_back(jacket);
+  
   Rooms* currentRoom = *list.begin();
   char continueplaying[30];
   bool checkItem = false;
@@ -94,21 +100,46 @@ int main(){
   while(running == true){
     
     currentRoom->printDescription();
-    if(currentRoom->isEnd() && checkItem==true){
-      cout << "you win" << endl;
-      cout << "Would you like to keep exploring?" << endl;
-      cin.get(continueplaying, 30);
-      cin.ignore();
-      if((strcmp(continueplaying,"yes"))==0){
-	running = true;
+    if(currentRoom->gameover()){
+      for(vector<Items*>::iterator it = inventory.begin(); it != inventory.end(); it++){
+	if((strcmp((*it)->getName(),"eyeballs"))==0){
+	  cout << "Thank you for bringing the eyeballs, we will now spare your life." << endl;
+	  checkItem = true;
+	}
+	
       }
-      else if((strcmp(continueplaying,"no"))==0){
-	  running = false;
+      if(checkItem == false){
+	cout << "Ruhika: You didn't bring eyes for sacrifices... therefore I'll have you instead :) <3" << endl;
+	return 0;
+      }
+    
+
+    }
+    if(currentRoom->isEnd()){
+      for(vector<Items*>::iterator it = inventory.begin(); it != inventory.end() ; it++){
+        cout << (*it)->getName() << endl;
+	if((strcmp((*it)->getName(),"cookies"))==0){
+	  cout << "Sanil: HEYY You brought cookies! Thanks!" << endl;
+	  cout << "you win" << endl;
+	  cout << "Would you like to keep exploring?" << endl;
+	  cin.get(continueplaying, 30);
+	  cin.ignore();
+	  if((strcmp(continueplaying,"yes"))==0){
+	    running = true;
+	  }
+	  else if((strcmp(continueplaying,"no"))==0){
+	    running = false;
+	  }
+	
+	}
       }
     }
-    cout << "What would you like to do?" << endl;
+    cout << "What would you like to do? Type: move, put, pickup, quit" << endl;
     cin.get(input,30);
     cin.ignore();
+    if((strcmp(input, "quit"))==0){
+      return 0;
+    }
     if((strcmp(input, "move"))==0){
       currentRoom = currentRoom->goThruExit();
     }

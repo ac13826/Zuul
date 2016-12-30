@@ -9,7 +9,7 @@ Rooms::Rooms(const char* newDescription, vector<Rooms*>* roomList){
   description = strdup(newDescription);//puts description string on the heap and converts into a char* safely
   roomList->push_back(this);//pushing "this" as in the current pointer being worked on
   end = false;
- 
+  lose = false;
 
 }
 
@@ -72,11 +72,10 @@ void Rooms::putItem(vector<Items*>* inventory){
   cin.get(putName, 30);
   cin.ignore();
   for(vector<Items*>::iterator it = inventory->begin(); it !=inventory->end(); it++){
-    cout << *it << endl;
     if((strcmp((*it)->getName(),putName))==0){
-      cout << "hey" << endl;
+      cout <<"hey" << endl;
       items.push_back(*it);
-      inventory->erase(it);
+      inventory->erase(it);break;
     }
   }
 }
@@ -92,6 +91,8 @@ void Rooms::printItems(){
 }
 
 Rooms* Rooms::goThruExit(){
+  cout << "You can go" << endl;
+  printExits();
   cout << "Where would you like to go?" << endl;
   cin.get(directioninput,30);
   if(((strcmp(directioninput,"north"))==0) || ((strcmp(directioninput,"west"))==0) ||((strcmp(directioninput,"east"))==0) || ((strcmp(directioninput,"south"))==0)){
@@ -102,10 +103,8 @@ Rooms* Rooms::goThruExit(){
 	return (*it).second;
 	
       }
-    }
-    
+    }    
   }
- 
 
 }
 
@@ -115,6 +114,13 @@ end = true;
 }
 bool Rooms::isEnd(){
   return end;
+}
+
+void Rooms::setLose(){
+  lose = true;
+}
+bool Rooms::gameover(){
+  return lose;
 }
 
 /*void Rooms:: checkItem(){
