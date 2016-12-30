@@ -1,8 +1,11 @@
+#ifndef ROOMS_H
+#define ROOMS_H
+
 #include<iostream>
 #include<string.h>
 #include<map>
 #include<vector>
-#include "Item.h"
+#include "Items.h"
 
 using namespace std;
 
@@ -17,23 +20,28 @@ class Rooms{
  public:
   Rooms(const char* newDescription,vector<Rooms*>* roomList);
   ~Rooms();
-
+  bool isEnd();
   char* getItem();
   Rooms* getExits(char* exitKey);
-  void pickupItem(vector<Item*>* inventory, char* itemName);//putting the item into inventory
-  void putItem(vector<Item*>* inventory, char* itemName);//moving an item into the room
-  void placeItem(Item* item); //Place item in the room
+  void pickupItem(vector<Items*>* inventory);//putting the item into inventory
+  void putItem(vector<Items*>* inventory);//putting an item into the room
+  void placeItem(Items* item); //Place item in the room
   void setExits(const char* exitName, Rooms* exitRoom);
   void printExits();//printing out all the exits
   void printItems();
   Rooms* goThruExit();
   void printDescription();//print out information (name, description,...)
+  void setEnd();
+  void checkItem();
  protected:
   char room[10];
   int type;
   map<const char*,Rooms*, input_compare> exits;
-  vector<Item*> items;
+  vector<Items*> items;//for the rooms
   char* description;
   char directioninput[30];
-
+  bool end;
+  bool itemcheck;
 };
+
+#endif

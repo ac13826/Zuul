@@ -3,6 +3,7 @@
 #include<vector>
 #include "Rooms.h"
 #include<map>
+#include "Items.h"
 
 using namespace std;
 
@@ -69,26 +70,69 @@ void setupRoom(vector<Rooms*>*list){//creating all my rooms
     bronze_bath->setExits("west", attic);
 
     attic->setExits("east", bronze_bath);
+    entrance->placeItem(new Items("umbrella"));
+    kitchen->placeItem(new Items("cookies"));
+    hall->setEnd();
 }
 
 int main(){
   bool running = true;
-  vector<Item*> inventory;
+  vector<Items*> inventory;
   vector<Rooms*>list;
   char input[30];
   char directioninput[30];
   setupRoom(&list);
+  Items* jacket = new Items("jacket");
+  Items* shoes = new Items("shoes");
+  inventory.push_back(jacket);
+  inventory.push_back(shoes);
   Rooms* currentRoom = *list.begin();
+  char continueplaying[30];
+  bool checkItem = false;
+
+
   while(running == true){
-    cout << currentRoom << endl;
+    
     currentRoom->printDescription();
+    if(currentRoom->isEnd() && checkItem==true){
+      cout << "you win" << endl;
+      cout << "Would you like to keep exploring?" << endl;
+      cin.get(continueplaying, 30);
+      cin.ignore();
+      if((strcmp(continueplaying,"yes"))==0){
+	running = true;
+      }
+      else if((strcmp(continueplaying,"no"))==0){
+	  running = false;
+      }
+    }
     cout << "What would you like to do?" << endl;
     cin.get(input,30);
     cin.ignore();
     if((strcmp(input, "move"))==0){
       currentRoom = currentRoom->goThruExit();
     }
-
+    else if((strcmp(input, "inventory"))==0){
+      cout << "You have: " << endl;
+      for(vector<Items*>::iterator it = inventory.begin(); it != inventory.end(); it++){
+	cout << (*it)->getName() << endl;
+	/*    for(vector<Items*>::iterator it = inventory.begin(); it != inventory.end(); it++){
+	 */ if((strcmp((*it)->getName(),"cookies"))==0){
+        checkItem = true;
+      }/*
+      cout << (*it)->getName() << endl;
+    }
+	 */
+      }
+    }
+    else if((strcmp(input, "pickup"))==0){
+      cout << "hello " << endl;
+      currentRoom->pickupItem(&inventory);
+      
+    }
+    else if((strcmp(input, "put"))==0){
+      currentRoom->putItem(&inventory);
+    }
     
   }
 }
