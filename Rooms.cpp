@@ -1,3 +1,4 @@
+//Rooms class for zuul
 #include<iostream>
 #include "Rooms.h"
 #include "Items.h"
@@ -10,7 +11,7 @@ Rooms::Rooms(const char* newDescription, vector<Rooms*>* roomList){
   roomList->push_back(this);//pushing "this" as in the current pointer being worked on
   end = false;
   lose = false;
-
+  runningsf = true;
 }
 
 Rooms::~Rooms(){
@@ -24,13 +25,13 @@ void Rooms::setExits(const char* exitName, Rooms* exitRoom){//create exit
   exits[exitName] = exitRoom;
   
 }
-void Rooms::printExits(){
+void Rooms::printExits(){//printing the exits
   for(map<const char*, Rooms*>::iterator it = exits.begin(); it != exits.end(); it++){
     cout << (*it).first << endl;//prints out the first part of the map (second part would be the rooms that they go into
   }
 }
 
-void Rooms::printDescription(){
+void Rooms::printDescription(){//printing the description
   cout << "------------------------------" << endl;
   cout << "You are " << description << endl;
   cout << "There is/are: " << endl;
@@ -50,7 +51,7 @@ void Rooms::printDescription(){
   }  
 }*/
 
-void Rooms::pickupItem(vector<Items*>* inventory){
+void Rooms::pickupItem(vector<Items*>* inventory){//placing item in the inventory
   char itempickup[30];
   cout << "What would you like to pick up?" << endl;
   cin.get(itempickup,30);
@@ -66,7 +67,7 @@ void Rooms::pickupItem(vector<Items*>* inventory){
 
 }
 
-void Rooms::putItem(vector<Items*>* inventory){
+void Rooms::putItem(vector<Items*>* inventory){//putting item into the room item vector
   char putName[30];
   cout << "What would you like to put down?" << endl;
   cin.get(putName, 30);
@@ -80,34 +81,38 @@ void Rooms::putItem(vector<Items*>* inventory){
   }
 }
 
-void Rooms::placeItem(Items* item){
+void Rooms::placeItem(Items* item){//when i first begin the program and put items into the rooms i choose
   items.push_back(item);
 }
 
-void Rooms::printItems(){
+void Rooms::printItems(){//printing what items you have
   for(vector<Items*>::iterator it = items.begin(); it !=items.end(); it++){
      cout << (*it)->getName() << endl;
   }
 }
 
-Rooms* Rooms::goThruExit(){
-  cout << "You can go" << endl;
-  printExits();
-  cout << "Where would you like to go?" << endl;
-  cin.get(directioninput,30);
-  if(((strcmp(directioninput,"north"))==0) || ((strcmp(directioninput,"west"))==0) ||((strcmp(directioninput,"east"))==0) || ((strcmp(directioninput,"south"))==0)){
-    for(map<const char*, Rooms*>::iterator it = exits.begin(); it != exits.end(); it++){
-      if((strcmp(directioninput, (*it).first))==0){
-	cout << (*it).first << endl;
-	cin.ignore();
-	return (*it).second;
+Rooms* Rooms::goThruExit(){//choosing which exit to go through
+  while(runningsf=true){
+    cout << "You can go" << endl;
+    
+    printExits();
+    
+    cout << "Where would you like to go?" << endl;
+    cin.get(directioninput,30);
+    cin.ignore();
+    if(((strcmp(directioninput,"north"))==0) || ((strcmp(directioninput,"west"))==0) ||((strcmp(directioninput,"east"))==0) || ((strcmp(directioninput,"south"))==0)){
+      for(map<const char*, Rooms*>::iterator it = exits.begin(); it != exits.end(); it++){
+	if((strcmp(directioninput, (*it).first))==0){
+	  cout << (*it).first << endl;
 	
-      }
-    }    
-  }
-
+	  return (*it).second;
+	  
+	}
+      }    
+    }
+  } 
 }
-
+//winning and losing conditions check
 void Rooms::setEnd(){
   
 end = true;

@@ -1,15 +1,19 @@
+//This is zuul, a game where you run around picking stuff up.
+//By Austin Chang, completed 12/30 (college apps p much due tomorrow)
+//Period 7
+
 #include<iostream>
 #include<cstring>
 #include<vector>
-#include "Rooms.h"
+#include "Rooms.h"//rooms class
 #include<map>
-#include "Items.h"
+#include "Items.h"//items class
 
 using namespace std;
 
-bool directionCheck(char*a, const char*b);
+bool directionCheck(char*a, const char*b);//was intended for later but pmuch useless at this point
 
-void setupRoom(vector<Rooms*>*list){//creating all my rooms
+void setupRoom(vector<Rooms*>*list){//creating a vector of room pointers
     Rooms* front_porch = new Rooms("at Sanil's front door. He invited you to his game room, but you have to find it yourself", list);
     Rooms* entrance = new Rooms("at the entrance of the house. Please take of your shoes.", list);
     Rooms* hall = new Rooms("in the hall.", list);
@@ -28,7 +32,7 @@ void setupRoom(vector<Rooms*>*list){//creating all my rooms
     Rooms* attic = new Rooms("in the attic. It's quite dusty.", list);
     
     //exits
-    front_porch->setExits("north", entrance);
+    front_porch->setExits("north", entrance);//setExit is in the Room class and is used for making maps where the "direction" refers to a specific room pointer
     entrance->setExits("north", hall);
     entrance->setExits("south", front_porch);
 
@@ -72,35 +76,35 @@ void setupRoom(vector<Rooms*>*list){//creating all my rooms
     bronze_bath->setExits("west", attic);
 
     attic->setExits("east", bronze_bath);
-    entrance->placeItem(new Items("umbrella"));
+    entrance->placeItem(new Items("umbrella"));//creating and placing a couple of items in specific rooms 
     kitchen->placeItem(new Items("cookies"));
     attic->placeItem(new Items("eyeballs"));
-    game_room->setEnd();
-    torture_room->setLose();
+    game_room->setEnd();//win condition room
+    torture_room->setLose();//lose condition room
 }
 
 int main(){
   bool running = true;
-  vector<Items*> inventory;
-  vector<Rooms*>list;
+  vector<Items*> inventory;//user vector for items
+  vector<Rooms*>list;//vector of rooms
   char input[30];
   char directioninput[30];
-  setupRoom(&list);
-  Items* jacket = new Items("jacket");
+  setupRoom(&list);//setting up the rooms
+  Items* jacket = new Items("jacket");//initial user items
   Items* shoes = new Items("shoes");
   
-  inventory.push_back(shoes);
+  inventory.push_back(shoes);//pushing onto the inventory
   inventory.push_back(jacket);
   
-  Rooms* currentRoom = *list.begin();
+  Rooms* currentRoom = *list.begin();//currentRoom tracks which room pointer i'm on, and starts from the "beginning"
   char continueplaying[30];
   bool checkItem = false;
 
 
   while(running == true){
     
-    currentRoom->printDescription();
-    if(currentRoom->gameover()){
+    currentRoom->printDescription();//printing out everything about the room
+    if(currentRoom->gameover()){//losing conidition
       for(vector<Items*>::iterator it = inventory.begin(); it != inventory.end(); it++){
 	if((strcmp((*it)->getName(),"eyeballs"))==0){
 	  cout << "Thank you for bringing the eyeballs, we will now spare your life." << endl;
@@ -115,7 +119,7 @@ int main(){
     
 
     }
-    if(currentRoom->isEnd()){
+    if(currentRoom->isEnd()){//winning conditiion
       for(vector<Items*>::iterator it = inventory.begin(); it != inventory.end() ; it++){
         cout << (*it)->getName() << endl;
 	if((strcmp((*it)->getName(),"cookies"))==0){
@@ -134,7 +138,7 @@ int main(){
 	}
       }
     }
-    cout << "What would you like to do? Type: move, put, pickup, quit" << endl;
+    cout << "What would you like to do? Type: move, put, pickup, quit" << endl;//start
     cin.get(input,30);
     cin.ignore();
     if((strcmp(input, "quit"))==0){
@@ -168,7 +172,7 @@ int main(){
   }
 }
 
-bool directionCheck(char*a, const char*b){
+bool directionCheck(char*a, const char*b){//lowkey useless
   for(int i = 0; i < strlen(b); i++){
     if(a[i] != b[i])
       return false;
